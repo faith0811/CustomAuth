@@ -17,6 +17,6 @@
 
 
 
--(NSString *)result;
+-(NSString *)resultCode;
 
 @end

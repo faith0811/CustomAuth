@@ -63,9 +63,6 @@
     size_t cipherBufferSize = SecKeyGetBlockSize(publicKey);
     uint8_t *cipherBuffer = malloc(cipherBufferSize);
     uint8_t *nonce = (uint8_t *)[plainTextString UTF8String];
-    for (int i =0; i<strlen((char *)nonce); ++i) {
-        NSLog(@"nonce[%d]:%c",i,nonce[i]);
-    }
     SecKeyEncrypt(publicKey,
                   kSecPaddingNone,
                   nonce,
@@ -86,23 +83,20 @@
 }
 
 +(NSData *)encryptRSAWithData:(NSData *)data key:(SecKeyRef)publicKey{
-    size_t nonceLength = [data length];
+    size_t plainLength = [data length];
     size_t cipherBufferSize = SecKeyGetBlockSize(publicKey);
     uint8_t *cipherBuffer = malloc(cipherBufferSize);
     //uint8_t *nonce;
-    void * plain = malloc(nonceLength);
-    [data getBytes:plain length:nonceLength];
+    void * plain = malloc(plainLength);
+    [data getBytes:plain length:plainLength];
     SecKeyEncrypt(publicKey,
                   kSecPaddingNone,
                   plain,
-                  nonceLength,
+                  plainLength,
                   &cipherBuffer[0],
                   &cipherBufferSize);
     NSData *encryptedData = [NSData dataWithBytes:cipherBuffer length:cipherBufferSize];
     
-    NSLog(@"%@",encryptedData);
-    //free(nonce);
-    //free(cipherBuffer);
     return encryptedData;
 
 }

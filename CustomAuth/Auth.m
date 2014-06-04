@@ -123,7 +123,6 @@ int const ksercretCodeLength = 20;
         NSMutableData *scdata = [NSMutableData dataWithData:serialData];
         [scdata appendData:challenge];
         Byte *scBytes = (Byte *)[scdata bytes];
-        NSLog(@"%@",challenge);
         
         //HMac SHA1 serial+challenge as data codeBytes as key
         unsigned char cHmac[CC_SHA1_DIGEST_LENGTH];
@@ -134,9 +133,6 @@ int const ksercretCodeLength = 20;
         NSString *randomKey = [self createRandomKeyWithSize:20];
         NSData *randomKeyData = [randomKey dataUsingEncoding:NSUTF8StringEncoding];
         [created appendData:randomKeyData];
-        NSLog(@"scdata:%@",scdata);
-        NSLog(@"created:%@",created);
-        NSLog(@"randomkey:%@",randomKey);
         NSData *encrypted = [self encryptWithData:created];
         
         //send serial+encrypted data to validate url
@@ -144,15 +140,13 @@ int const ksercretCodeLength = 20;
         NSMutableData *sendingData = [NSMutableData dataWithData:serialData];
         [sendingData appendData:encrypted];
         NSData *received = [self postData:sendingData withUrl:validUrl];
-        NSLog(@"received:%@,length:%d",received,received.length);
         
         //decrypt received data
         [self decryptWithData:received withKey:randomKey];
-        NSLog(@"secret:%s",secretCode);
     } else {
         NSLog(@"invilid serial code");
     }
-    return nil;
+    return self;
 }
 
 -(Byte *)restoreCodeFromChar:(NSString *)code {
@@ -162,7 +156,6 @@ int const ksercretCodeLength = 20;
         if (c > 47 && c < 58) {
             c -= 48;
         }else{
-            c -= 55;
             if (c > 82) {
                 --c; //S
             }
@@ -175,6 +168,7 @@ int const ksercretCodeLength = 20;
             if (c > 72) {
                 --c; //I
             }
+            c -= 55;
         }
         bytes[i] = c;
     }
@@ -227,7 +221,7 @@ int const ksercretCodeLength = 20;
 -(void )decryptWithData:(NSData *)data withKey:(NSString *)key{
     NSString *dataString = [[NSString alloc]initWithData:data encoding:NSASCIIStringEncoding];
     NSString *asciiString;
-    if (data.length == 37) {
+    if (dataString.length == 45) {
          asciiString = [dataString substringFromIndex:8];
     } else {
         asciiString = [dataString copy];
@@ -283,7 +277,7 @@ int const ksercretCodeLength = 20;
     return [NSDate date].timeIntervalSince1970*1000+sync;
 }
 
--(NSString *)result {
+-(NSString *)resultCode {
     NSScanner *scanner;
 
     unsigned times = (unsigned)([self servertime]/kwatingTime);
