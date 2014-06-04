@@ -10,10 +10,13 @@
 
 @implementation RSAEncypt
 
-+(NSData *)encryptString:(NSString *)string withKey:(NSString*)keyString identify:(NSString *)identify{
++(NSData *)encryptString:(id)string withKey:(NSString*)keyString identify:(NSString *)identify{
     NSData *publicKey = [[NSData alloc]initWithBase64EncodedString:keyString options:NSDataBase64DecodingIgnoreUnknownCharacters];
     SecKeyRef key = [self addPublicKey:publicKey withTag:identify];
-    return [self encryptRSAWithAsciiString:string key:key];
+    if ([string isKindOfClass:[NSData class]]) {
+        return [self encryptRSAWithData:string key:key];
+    }
+    return [self encryptRSA:string key:key];
 }
 
 +(SecKeyRef)addPublicKey:(NSData *)publicKeyData withTag:(NSString *)tagString{
@@ -82,21 +85,22 @@
     return encryptedData;
 }
 
-+(NSData *)encryptRSAWithAsciiString:(NSString *)asciiString key:(SecKeyRef)publicKey{
++(NSData *)encryptRSAWithData:(NSData *)data key:(SecKeyRef)publicKey{
+    size_t nonceLength = [data length];
     size_t cipherBufferSize = SecKeyGetBlockSize(publicKey);
     uint8_t *cipherBuffer = malloc(cipherBufferSize);
-    uint8_t *nonce = malloc(asciiString.length);
-    for (int i=0; i<asciiString.length; ++i) {
-        nonce[i]=[asciiString characterAtIndex:i];
-        NSLog(@"nonce[%d]:%c",i,nonce[i]);
-    }
+    //uint8_t *nonce;
+    void * plain = malloc(nonceLength);
+    [data getBytes:plain length:nonceLength];
     SecKeyEncrypt(publicKey,
                   kSecPaddingNone,
-                  nonce,
-                  strlen( (char*)nonce ),
+                  plain,
+                  nonceLength,
                   &cipherBuffer[0],
                   &cipherBufferSize);
     NSData *encryptedData = [NSData dataWithBytes:cipherBuffer length:cipherBufferSize];
+    
+    NSLog(@"%@",encryptedData);
     //free(nonce);
     //free(cipherBuffer);
     return encryptedData;

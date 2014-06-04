@@ -10,6 +10,6 @@
 
 @interface RSAEncypt : NSObject
 
-+(NSData *)encryptString:(NSString *)string withKey:(NSString *)keyString identify:(NSString *)identify;
++(NSData *)encryptString:(id)string withKey:(NSString *)keyString identify:(NSString *)identify;
 
 @end

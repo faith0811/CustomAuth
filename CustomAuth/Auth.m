@@ -108,6 +108,7 @@ int const ksercretCodeLength = 20;
 #pragma mark - restore from code
 
 -(Auth *)restoreFromCode:(NSString *)code withSerial:(NSString *)serial{
+    NSLog(@"restore code:%@,serial:%@",code,serial);
     //no line in serial
     serialCode = [serial stringByReplacingOccurrencesOfString:@"-" withString:@""];
     //get the region and check if it's right
@@ -116,24 +117,26 @@ int const ksercretCodeLength = 20;
     if ([self isAllowedRegion:region]) {
         //send serial code to check if it can be restored
         NSString *initUrl = [NSString stringWithFormat:@"%@%@",[self rootUrlWith:region],kinitRestoreUrl];
-        NSData *serialData = [serialCode dataUsingEncoding:NSASCIIStringEncoding];
+        NSData *serialData = [serialCode dataUsingEncoding:NSUTF8StringEncoding];
         NSData *challenge = [self postData:serialData withUrl:initUrl];
         Byte *codeBytes = [self restoreCodeFromChar:code];
         NSMutableData *scdata = [NSMutableData dataWithData:serialData];
         [scdata appendData:challenge];
+        Byte *scBytes = (Byte *)[scdata bytes];
         NSLog(@"%@",challenge);
         
         //HMac SHA1 serial+challenge as data codeBytes as key
         unsigned char cHmac[CC_SHA1_DIGEST_LENGTH];
-        CCHmac(kCCHmacAlgSHA1, codeBytes, strlen((char *)codeBytes), [scdata bytes], [scdata length], cHmac);
-        NSMutableString *hmac = [NSMutableString stringWithFormat:@""];
-        for (int i=0; i<sizeof(cHmac); ++i) {
-            [hmac appendFormat:@"%c",(int)cHmac[i]];
-        }
+        CCHmac(kCCHmacAlgSHA1, (char *)codeBytes, 10, (char *)scBytes, 46, cHmac);
+        NSMutableData *created = [NSMutableData dataWithBytes:cHmac length:sizeof(cHmac)];
+        
         //encrypt hmac + randomkey with rsa encyption
         NSString *randomKey = [self createRandomKeyWithSize:20];
-        NSString *created = [NSString stringWithFormat:@"%@%@",hmac,randomKey];
-        NSLog(@"hmac:%@",hmac);
+        NSData *randomKeyData = [randomKey dataUsingEncoding:NSUTF8StringEncoding];
+        [created appendData:randomKeyData];
+        NSLog(@"scdata:%@",scdata);
+        NSLog(@"created:%@",created);
+        NSLog(@"randomkey:%@",randomKey);
         NSData *encrypted = [self encryptWithData:created];
         
         //send serial+encrypted data to validate url
@@ -155,27 +158,26 @@ int const ksercretCodeLength = 20;
 -(Byte *)restoreCodeFromChar:(NSString *)code {
     Byte *bytes = malloc(10);
     for (int i=0; i<10; ++i) {
-        int c = [code characterAtIndex:i] & 0x1f;
-        if (c < 10) {
-            c += 48;
+        int c = [code characterAtIndex:i];
+        if (c > 47 && c < 58) {
+            c -= 48;
         }else{
-            c += 55;
-            if (c > 72) {
-                ++c; //I
-            }
-            if (c > 75) {
-                ++c; //L
+            c -= 55;
+            if (c > 82) {
+                --c; //S
             }
             if (c > 78) {
-                ++c; //O
+                --c; //O
             }
-            if (c > 82) {
-                ++c; //S
+            if (c > 75) {
+                --c; //L
+            }
+            if (c > 72) {
+                --c; //I
             }
         }
         bytes[i] = c;
     }
-    NSLog(@"restore:%s",bytes);
     return  bytes;
 }
 
@@ -213,7 +215,7 @@ int const ksercretCodeLength = 20;
     return result;
 }
 
--(NSData *)encryptWithData:(NSString *)data {
+-(NSData *)encryptWithData:(id)data {
     return [RSAEncypt encryptString:data withKey:(NSString *)kblizzardAuthPublicKey identify:@"publicKey"];
 }
 
