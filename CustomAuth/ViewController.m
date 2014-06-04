@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "Auth.h"
 
 @interface ViewController ()
 
@@ -17,7 +18,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    /*
+    Auth *auth = [[Auth alloc]initWithRegion:@"CN"];
+    while (1) {
+        NSLog(@"result:%@",auth.result);
+        sleep(10);
+    }
+     */
+    Auth *authrestore = [[Auth alloc]initWithRestoreCode:@"1WG00RREH7" SerialCode:@"CN-1406-0497-3811"];
 }
 
 - (void)didReceiveMemoryWarning

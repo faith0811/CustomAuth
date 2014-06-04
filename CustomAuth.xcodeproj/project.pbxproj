@@ -22,6 +22,9 @@
 		D204E034190E2682006DF8DB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D204E013190E2682006DF8DB /* UIKit.framework */; };
 		D204E03C190E2682006DF8DB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D204E03A190E2682006DF8DB /* InfoPlist.strings */; };
 		D204E03E190E2682006DF8DB /* CustomAuthTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D204E03D190E2682006DF8DB /* CustomAuthTests.m */; };
+		D204E04A190E26DC006DF8DB /* Auth.m in Sources */ = {isa = PBXBuildFile; fileRef = D204E049190E26DC006DF8DB /* Auth.m */; };
+		D204E04D190E9F3B006DF8DB /* RSAEncypt.m in Sources */ = {isa = PBXBuildFile; fileRef = D204E04C190E9F3B006DF8DB /* RSAEncypt.m */; };
+		D204E0531919C935006DF8DB /* HttpPostOperator.m in Sources */ = {isa = PBXBuildFile; fileRef = D204E0521919C935006DF8DB /* HttpPostOperator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +58,12 @@
 		D204E039190E2682006DF8DB /* CustomAuthTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CustomAuthTests-Info.plist"; sourceTree = "<group>"; };
 		D204E03B190E2682006DF8DB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D204E03D190E2682006DF8DB /* CustomAuthTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomAuthTests.m; sourceTree = "<group>"; };
+		D204E048190E26DC006DF8DB /* Auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Auth.h; sourceTree = "<group>"; };
+		D204E049190E26DC006DF8DB /* Auth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Auth.m; sourceTree = "<group>"; };
+		D204E04B190E9F3B006DF8DB /* RSAEncypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSAEncypt.h; sourceTree = "<group>"; };
+		D204E04C190E9F3B006DF8DB /* RSAEncypt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSAEncypt.m; sourceTree = "<group>"; };
+		D204E0511919C935006DF8DB /* HttpPostOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpPostOperator.h; sourceTree = "<group>"; };
+		D204E0521919C935006DF8DB /* HttpPostOperator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpPostOperator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +123,7 @@
 		D204E015190E2682006DF8DB /* CustomAuth */ = {
 			isa = PBXGroup;
 			children = (
+				D204E047190E26BD006DF8DB /* Auth */,
 				D204E01E190E2682006DF8DB /* AppDelegate.h */,
 				D204E01F190E2682006DF8DB /* AppDelegate.m */,
 				D204E021190E2682006DF8DB /* Main_iPhone.storyboard */,
@@ -153,6 +163,19 @@
 				D204E03A190E2682006DF8DB /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D204E047190E26BD006DF8DB /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				D204E048190E26DC006DF8DB /* Auth.h */,
+				D204E049190E26DC006DF8DB /* Auth.m */,
+				D204E04B190E9F3B006DF8DB /* RSAEncypt.h */,
+				D204E04C190E9F3B006DF8DB /* RSAEncypt.m */,
+				D204E0511919C935006DF8DB /* HttpPostOperator.h */,
+				D204E0521919C935006DF8DB /* HttpPostOperator.m */,
+			);
+			name = Auth;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,8 +277,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				D204E029190E2682006DF8DB /* ViewController.m in Sources */,
+				D204E0531919C935006DF8DB /* HttpPostOperator.m in Sources */,
 				D204E020190E2682006DF8DB /* AppDelegate.m in Sources */,
 				D204E01C190E2682006DF8DB /* main.m in Sources */,
+				D204E04D190E9F3B006DF8DB /* RSAEncypt.m in Sources */,
+				D204E04A190E26DC006DF8DB /* Auth.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
